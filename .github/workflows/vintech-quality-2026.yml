@@ -1,0 +1,72 @@
+name: VinTech Quality 2026
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Inject conservative quality layer
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          changed=[]
+          for p in Path('.').rglob('*.html'):
+              if '.git' in p.parts:
+                  continue
+              s=p.read_text(encoding='utf-8')
+              original=s
+              if '/assets/vintech-quality-2026.css' not in s:
+                  marker=re.search(r'</head>',s,re.I)
+                  if marker:
+                      s=s[:marker.start()]+'    <link rel="stylesheet" href="/assets/vintech-quality-2026.css">\n'+s[marker.start():]
+              if s!=original:
+                  p.write_text(s,encoding='utf-8')
+                  changed.append(str(p))
+          print(f'Updated {len(changed)} HTML files')
+
+      - name: Validate basic HTML/SEO signals
+        shell: python
+        run: |
+          from pathlib import Path
+          import re
+          errors=[]
+          for p in Path('.').rglob('*.html'):
+              if '.git' in p.parts or p.name=='404.html':
+                  continue
+              s=p.read_text(encoding='utf-8')
+              if not re.search(r'<title>\s*[^<]{10,}\s*</title>',s,re.I):
+                  errors.append(f'{p}: missing/short title')
+              if not re.search(r'name=["\']description["\'][^>]+content=["\'][^"\']{40,}["\']',s,re.I):
+                  errors.append(f'{p}: missing/short description')
+              if not re.search(r'rel=["\']canonical["\']',s,re.I):
+                  errors.append(f'{p}: missing canonical')
+          if errors:
+              print('\n'.join(errors))
+              raise SystemExit(1)
+          print('VinTech quality checks passed')
+
+      - name: Commit generated HTML layer
+        if: github.event_name == 'push'
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo 'No generated changes.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add '*.html' '**/*.html'
+          git commit -m 'chore(quality): inject VinTech UX safeguards [skip ci]'
+          git push
