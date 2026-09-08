@@ -1,0 +1,9 @@
+/* VinTech quality layer — conservative UX, accessibility and performance safeguards. */
+html{scroll-behavior:smooth}
+body{overflow-x:hidden;opacity:1!important;animation:none!important}
+:where(a,button,input,textarea,select,summary):focus-visible{outline:3px solid rgba(240,200,90,.72);outline-offset:3px}
+:where(section[id]){scroll-margin-top:96px}
+:where(button,a,input,textarea,select){touch-action:manipulation}
+img{max-width:100%;height:auto}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}:where(*,*::before,*::after){animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+@media(max-width:768px){:where(.hamburger,.theme-toggle){min-width:44px;min-height:44px}}
