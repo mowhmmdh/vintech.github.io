@@ -1,9 +1,26 @@
-/* VinTech quality layer — conservative UX, accessibility and performance safeguards. */
-html{scroll-behavior:smooth}
-body{overflow-x:hidden;opacity:1!important;animation:none!important}
-:where(a,button,input,textarea,select,summary):focus-visible{outline:3px solid rgba(240,200,90,.72);outline-offset:3px}
+/* VinTech quality layer — unified visual, responsive and accessibility safeguards. */
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+body{overflow-x:hidden;opacity:1!important;animation:none!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+:where(a,button,input,textarea,select,summary):focus-visible{outline:3px solid rgba(240,200,90,.82);outline-offset:3px}
 :where(section[id]){scroll-margin-top:96px}
 :where(button,a,input,textarea,select){touch-action:manipulation}
-img{max-width:100%;height:auto}
+img{max-width:100%;height:auto;display:block}
+:root{--vtx-line:rgba(255,255,255,.10);--vtx-surface:rgba(255,255,255,.045);--vtx-text:#f4f7fb;--vtx-muted:#9aa8bb;--vtx-accent:#f0c85a;--vtx-accent2:#48c9ff;--vtx-radius:20px}
+body.light-mode{--vtx-line:rgba(10,20,30,.12);--vtx-surface:rgba(10,20,30,.045);--vtx-text:#101722;--vtx-muted:#5f6c7d}
+body.light-mode .navbar{box-shadow:0 12px 35px rgba(10,20,30,.08)}
+.navbar,.vt-nav{backdrop-filter:blur(20px) saturate(135%);-webkit-backdrop-filter:blur(20px) saturate(135%)}
+.container,.vt-container{width:min(1200px,calc(100% - 32px))}
+.nav-links a,.logo,.theme-toggle,.hamburger,.vt-nav a{transition:transform .2s ease,color .2s ease,background-color .2s ease,border-color .2s ease,box-shadow .2s ease}
+.nav-links a:hover,.vt-nav a:hover{transform:translateY(-1px)}
+.hero,.vt-hero{overflow:clip}
+.hero h1,.vt-hero h1,.section h2,.vt-section h2{text-wrap:balance}
+.card,.service-card,.project-card,.post-card,.vt-card,.vt-service-card,.vt-request-card{border:1px solid var(--vtx-line);border-radius:var(--vtx-radius);background:linear-gradient(145deg,var(--vtx-surface),rgba(255,255,255,.018));box-shadow:0 16px 45px rgba(0,0,0,.16);overflow:hidden;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
+.card:hover,.service-card:hover,.project-card:hover,.post-card:hover,.vt-card:hover,.vt-service-card:hover{transform:translateY(-4px);border-color:rgba(240,200,90,.30);box-shadow:0 25px 65px rgba(0,0,0,.23)}
+.btn,.nav-cta,.vt-btn{min-height:46px;border-radius:13px}
+.btn:focus-visible,.nav-cta:focus-visible,.vt-btn:focus-visible{box-shadow:0 0 0 4px rgba(240,200,90,.18)}
+input,textarea,select{border:1px solid var(--vtx-line);border-radius:13px;background:var(--vtx-surface);color:var(--vtx-text);min-height:48px}
+input:focus,textarea:focus,select:focus{border-color:var(--vtx-accent);box-shadow:0 0 0 4px rgba(240,200,90,.13);outline:none}
+@media(max-width:900px){.nav-links{gap:2px}.nav-links a{padding-inline:10px}.hero-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.container,.vt-container{width:calc(100% - 24px)}.navbar{padding-block:9px}.nav-links{display:none}.hamburger{display:flex}.hero{padding-block:48px 38px}.hero h1{font-size:clamp(2.15rem,12vw,3.5rem)}.stats,.grid-3{grid-template-columns:1fr}.card,.service-card,.project-card,.post-card,.vt-card,.vt-service-card,.vt-request-card{border-radius:16px}.section,.vt-section{padding-block:48px}.actions{display:grid;grid-template-columns:1fr}.actions>*{width:100%}}
+@media(hover:none){.card:hover,.service-card:hover,.project-card:hover,.post-card:hover,.vt-card:hover,.vt-service-card:hover{transform:none}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}:where(*,*::before,*::after){animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
-@media(max-width:768px){:where(.hamburger,.theme-toggle){min-width:44px;min-height:44px}}
