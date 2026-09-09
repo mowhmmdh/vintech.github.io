@@ -1,26 +1,581 @@
-/* VinTech quality layer — unified visual, responsive and accessibility safeguards. */
-html{scroll-behavior:smooth;scroll-padding-top:96px}
-body{overflow-x:hidden;opacity:1!important;animation:none!important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
-:where(a,button,input,textarea,select,summary):focus-visible{outline:3px solid rgba(240,200,90,.82);outline-offset:3px}
-:where(section[id]){scroll-margin-top:96px}
-:where(button,a,input,textarea,select){touch-action:manipulation}
-img{max-width:100%;height:auto;display:block}
-:root{--vtx-line:rgba(255,255,255,.10);--vtx-surface:rgba(255,255,255,.045);--vtx-text:#f4f7fb;--vtx-muted:#9aa8bb;--vtx-accent:#f0c85a;--vtx-accent2:#48c9ff;--vtx-radius:20px}
-body.light-mode{--vtx-line:rgba(10,20,30,.12);--vtx-surface:rgba(10,20,30,.045);--vtx-text:#101722;--vtx-muted:#5f6c7d}
-body.light-mode .navbar{box-shadow:0 12px 35px rgba(10,20,30,.08)}
-.navbar,.vt-nav{backdrop-filter:blur(20px) saturate(135%);-webkit-backdrop-filter:blur(20px) saturate(135%)}
-.container,.vt-container{width:min(1200px,calc(100% - 32px))}
-.nav-links a,.logo,.theme-toggle,.hamburger,.vt-nav a{transition:transform .2s ease,color .2s ease,background-color .2s ease,border-color .2s ease,box-shadow .2s ease}
-.nav-links a:hover,.vt-nav a:hover{transform:translateY(-1px)}
-.hero,.vt-hero{overflow:clip}
-.hero h1,.vt-hero h1,.section h2,.vt-section h2{text-wrap:balance}
-.card,.service-card,.project-card,.post-card,.vt-card,.vt-service-card,.vt-request-card{border:1px solid var(--vtx-line);border-radius:var(--vtx-radius);background:linear-gradient(145deg,var(--vtx-surface),rgba(255,255,255,.018));box-shadow:0 16px 45px rgba(0,0,0,.16);overflow:hidden;transition:transform .25s ease,border-color .25s ease,box-shadow .25s ease}
-.card:hover,.service-card:hover,.project-card:hover,.post-card:hover,.vt-card:hover,.vt-service-card:hover{transform:translateY(-4px);border-color:rgba(240,200,90,.30);box-shadow:0 25px 65px rgba(0,0,0,.23)}
-.btn,.nav-cta,.vt-btn{min-height:46px;border-radius:13px}
-.btn:focus-visible,.nav-cta:focus-visible,.vt-btn:focus-visible{box-shadow:0 0 0 4px rgba(240,200,90,.18)}
-input,textarea,select{border:1px solid var(--vtx-line);border-radius:13px;background:var(--vtx-surface);color:var(--vtx-text);min-height:48px}
-input:focus,textarea:focus,select:focus{border-color:var(--vtx-accent);box-shadow:0 0 0 4px rgba(240,200,90,.13);outline:none}
-@media(max-width:900px){.nav-links{gap:2px}.nav-links a{padding-inline:10px}.hero-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:640px){.container,.vt-container{width:calc(100% - 24px)}.navbar{padding-block:9px}.nav-links{display:none}.hamburger{display:flex}.hero{padding-block:48px 38px}.hero h1{font-size:clamp(2.15rem,12vw,3.5rem)}.stats,.grid-3{grid-template-columns:1fr}.card,.service-card,.project-card,.post-card,.vt-card,.vt-service-card,.vt-request-card{border-radius:16px}.section,.vt-section{padding-block:48px}.actions{display:grid;grid-template-columns:1fr}.actions>*{width:100%}}
-@media(hover:none){.card:hover,.service-card:hover,.project-card:hover,.post-card:hover,.vt-card:hover,.vt-service-card:hover{transform:none}}
-@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto!important}:where(*,*::before,*::after){animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+/*
+ * VinTech Responsive Quality Layer
+ * Loaded after page-level styles by the quality workflow.
+ * Goal: stable layout from 320px phones through large desktop/TV widths.
+ */
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 96px;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  overflow-x: hidden;
+  max-width: 100%;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img, svg, video, canvas {
+  max-width: 100%;
+  height: auto;
+}
+
+button, input, textarea, select {
+  font: inherit;
+}
+
+:where(a, button, input, textarea, select, summary):focus-visible {
+  outline: 3px solid rgba(240, 200, 90, .82);
+  outline-offset: 3px;
+}
+
+:where(section[id]) {
+  scroll-margin-top: 96px;
+}
+
+:where(button, a, input, textarea, select) {
+  touch-action: manipulation;
+}
+
+/* Shared containers */
+.container,
+.vt-container,
+.wrap {
+  width: min(1200px, calc(100% - 32px));
+  max-width: 1200px;
+  margin-inline: auto;
+}
+
+/* Prevent long URLs/labels from creating horizontal overflow */
+:where(h1, h2, h3, h4, p, a, span, li, label) {
+  overflow-wrap: anywhere;
+}
+
+/* Navigation */
+.navbar,
+.vt-nav,
+.nav {
+  backdrop-filter: blur(20px) saturate(135%);
+  -webkit-backdrop-filter: blur(20px) saturate(135%);
+}
+
+.navbar .container,
+.vt-nav .container {
+  min-width: 0;
+}
+
+.nav-links {
+  min-width: 0;
+}
+
+.nav-links a,
+.logo,
+.theme-toggle,
+.hamburger,
+.vt-nav a {
+  transition: transform .2s ease, color .2s ease, background-color .2s ease,
+              border-color .2s ease, box-shadow .2s ease;
+}
+
+.nav-links a:hover,
+.vt-nav a:hover {
+  transform: translateY(-1px);
+}
+
+/* Cards and controls */
+.card,
+.service-card,
+.project-card,
+.post-card,
+.vt-card,
+.vt-service-card,
+.vt-request-card,
+.services-bento .service-item,
+.hero-visual .bento-item,
+.skill-group,
+.timeline-item,
+.contact-form,
+.about-grid {
+  max-width: 100%;
+}
+
+.btn,
+.nav-cta,
+.vt-btn {
+  min-height: 46px;
+}
+
+input,
+textarea,
+select {
+  max-width: 100%;
+}
+
+/* Index / main VinTech page */
+.hero,
+.vt-hero {
+  overflow: clip;
+}
+
+.hero h1,
+.vt-hero h1,
+.section h2,
+.vt-section h2 {
+  text-wrap: balance;
+}
+
+/* Desktop: keep the navigation on one stable row */
+@media (max-width: 1120px) and (min-width: 769px) {
+  .navbar .container {
+    gap: 14px;
+  }
+
+  .logo {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .nav-links {
+    gap: 0;
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+
+  .nav-links a {
+    padding-inline: 9px;
+    font-size: .78rem;
+  }
+
+  .nav-cta {
+    padding-inline: 14px !important;
+  }
+}
+
+@media (max-width: 992px) {
+  .hero-grid,
+  .contact-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-grid {
+    gap: 42px;
+  }
+
+  .hero-content {
+    text-align: center;
+  }
+
+  .hero-content .subtitle,
+  .hero-content .desc {
+    margin-inline: auto;
+  }
+
+  .hero-buttons {
+    justify-content: center;
+  }
+
+  .hero-visual {
+    width: min(100%, 520px);
+    margin-inline: auto;
+  }
+
+  .about-grid {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .about-avatar {
+    margin-inline: auto;
+  }
+
+  .services-bento {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .services-bento .service-item:nth-child(1),
+  .services-bento .service-item:nth-child(4) {
+    grid-row: auto;
+    grid-column: auto;
+  }
+
+  .skills-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .container,
+  .vt-container,
+  .wrap {
+    width: calc(100% - 24px);
+  }
+
+  .navbar {
+    padding-block: 9px;
+  }
+
+  .navbar .container {
+    min-height: 42px;
+    gap: 8px;
+  }
+
+  .logo {
+    min-width: 0;
+    font-size: 1.2rem;
+    white-space: nowrap;
+  }
+
+  .logo .badge {
+    display: none;
+  }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: calc(100% + 1px);
+    left: 12px;
+    right: 12px;
+    width: auto;
+    margin: 0;
+    padding: 10px;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+    flex-wrap: nowrap;
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    background: var(--bg-secondary);
+    box-shadow: 0 20px 55px rgba(0,0,0,.28);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+  }
+
+  .nav-links.open {
+    display: flex;
+  }
+
+  .nav-links li {
+    width: 100%;
+  }
+
+  .nav-links a {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 44px;
+    padding: 8px 14px;
+  }
+
+  .nav-links a:hover {
+    transform: none;
+  }
+
+  .hamburger {
+    display: flex;
+    flex: 0 0 auto;
+  }
+
+  .theme-toggle {
+    flex: 0 0 auto;
+    margin-inline: 0;
+    min-width: 42px;
+    min-height: 40px;
+    padding: 5px 10px;
+    justify-content: center;
+  }
+
+  .hero {
+    min-height: auto;
+    padding-block: 128px 54px;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(2.25rem, 11vw, 3.5rem);
+  }
+
+  .hero-content .subtitle {
+    font-size: 1.05rem;
+  }
+
+  .hero-content .desc {
+    font-size: .95rem;
+  }
+
+  .hero-buttons {
+    gap: 10px;
+  }
+
+  .btn {
+    min-width: 0;
+    padding: 12px 22px;
+  }
+
+  .section,
+  .vt-section {
+    padding-block: 56px;
+  }
+
+  .section-header {
+    margin-bottom: 38px;
+  }
+
+  .section-header h2 {
+    font-size: clamp(1.8rem, 8vw, 2.5rem);
+  }
+
+  .about-grid {
+    padding: 28px 20px;
+  }
+
+  .skills-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-wrapper {
+    gap: 28px;
+  }
+
+  .timeline-item {
+    padding: 20px;
+  }
+
+  .timeline-item .head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  /* Insights page */
+  .nav {
+    position: sticky;
+    top: 8px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+  }
+
+  .nav a {
+    min-width: 0;
+  }
+
+  .hero.vt-hero,
+  .hero {
+    padding-top: 54px;
+  }
+
+  .grid,
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .container,
+  .vt-container,
+  .wrap {
+    width: calc(100% - 20px);
+  }
+
+  .navbar .container {
+    gap: 5px;
+  }
+
+  .logo {
+    font-size: 1.05rem;
+    gap: 6px;
+  }
+
+  .logo i {
+    font-size: .9rem;
+  }
+
+  .theme-toggle {
+    min-width: 38px;
+    min-height: 38px;
+    padding: 4px 8px;
+  }
+
+  .hamburger {
+    padding: 4px 2px;
+  }
+
+  .hamburger span {
+    width: 25px;
+  }
+
+  .hero {
+    padding-top: 116px;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(1.9rem, 12vw, 2.7rem);
+  }
+
+  .hero-content .tag,
+  .section-header .tag {
+    max-width: 100%;
+    padding-inline: 12px;
+  }
+
+  .hero-buttons {
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .hero-buttons .btn,
+  .contact-form .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero-visual {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    padding: 0;
+  }
+
+  .hero-visual .bento-item,
+  .hero-visual .bento-item:nth-child(1) {
+    min-height: 92px;
+    padding: 14px 8px;
+  }
+
+  .hero-visual .bento-item .icon {
+    font-size: 1.8rem;
+  }
+
+  .hero-visual .bento-item .big-icon {
+    font-size: 2.5rem;
+  }
+
+  .hero-visual .bento-item .label,
+  .hero-visual .bento-item .big-label {
+    font-size: .75rem;
+  }
+
+  .services-bento {
+    grid-template-columns: 1fr;
+  }
+
+  .service-item {
+    padding: 24px 18px !important;
+  }
+
+  .about-grid {
+    padding: 24px 16px;
+  }
+
+  .about-avatar {
+    width: 100px;
+    height: 100px;
+    font-size: 2.2rem;
+  }
+
+  .contact-form {
+    padding: 22px 16px;
+  }
+
+  .contact-info .item {
+    align-items: flex-start;
+    font-size: .9rem;
+  }
+
+  .contact-info .item .ico {
+    width: 40px;
+    height: 40px;
+  }
+
+  .section,
+  .vt-section {
+    padding-block: 44px;
+  }
+
+  .section-header {
+    margin-bottom: 30px;
+  }
+
+  .skill-group {
+    padding: 22px 18px;
+  }
+
+  .nav {
+    padding: 10px 12px;
+    border-radius: 14px;
+  }
+
+  .nav a {
+    font-size: .88rem;
+  }
+}
+
+/* Very narrow devices: 320–360px */
+@media (max-width: 360px) {
+  .container,
+  .vt-container,
+  .wrap {
+    width: calc(100% - 16px);
+  }
+
+  .hero-content h1 {
+    font-size: 1.75rem;
+  }
+
+  .hero-visual .bento-item {
+    min-height: 82px;
+  }
+
+  .theme-toggle {
+    min-width: 34px;
+    padding-inline: 6px;
+  }
+}
+
+/* Touch devices: avoid sticky hover transforms */
+@media (hover: none) {
+  .card:hover,
+  .service-card:hover,
+  .project-card:hover,
+  .post-card:hover,
+  .vt-card:hover,
+  .vt-service-card:hover,
+  .services-bento .service-item:hover,
+  .hero-visual .bento-item:hover,
+  .skill-group:hover {
+    transform: none;
+  }
+}
+
+/* Accessibility / reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto !important;
+  }
+
+  :where(*, *::before, *::after) {
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Large screens / TV: prevent excessive text width */
+@media (min-width: 1600px) {
+  .container,
+  .vt-container,
+  .wrap {
+    width: min(1280px, calc(100% - 64px));
+    max-width: 1280px;
+  }
+
+  .hero-content h1 {
+    font-size: clamp(3.8rem, 4vw, 5rem);
+  }
+}
