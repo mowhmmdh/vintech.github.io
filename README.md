@@ -31,3 +31,5 @@ The personal website is the primary source for professional background, technica
 ## Repository purpose
 
 This repository contains the VinTech web presence and related technical work. Documentation is kept factual and avoids fabricated clients, testimonials, performance metrics or credentials.
+
+<!-- Responsive quality layer is maintained under assets/ and applied to all HTML pages by CI. -->
