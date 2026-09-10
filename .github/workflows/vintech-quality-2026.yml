@@ -16,7 +16,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Inject conservative quality layer
+      - name: Inject visual quality layers
         shell: python
         run: |
           from pathlib import Path
@@ -27,10 +27,11 @@ jobs:
                   continue
               s=p.read_text(encoding='utf-8')
               original=s
-              if '/assets/vintech-quality-2026.css' not in s:
-                  marker=re.search(r'</head>',s,re.I)
-                  if marker:
-                      s=s[:marker.start()]+'    <link rel="stylesheet" href="/assets/vintech-quality-2026.css">\n'+s[marker.start():]
+              for href in ('/assets/vintech-quality-2026.css','/assets/aesthetic-overhaul-2026.css'):
+                  if href not in s:
+                      marker=re.search(r'</head>',s,re.I)
+                      if marker:
+                          s=s[:marker.start()]+f'    <link rel="stylesheet" href="{href}">\n'+s[marker.start():]
               if s!=original:
                   p.write_text(s,encoding='utf-8')
                   changed.append(str(p))
@@ -52,6 +53,8 @@ jobs:
                   errors.append(f'{p}: missing/short description')
               if not re.search(r'rel=["\']canonical["\']',s,re.I):
                   errors.append(f'{p}: missing canonical')
+              if '/assets/aesthetic-overhaul-2026.css' not in s:
+                  errors.append(f'{p}: aesthetic layer missing')
           if errors:
               print('\n'.join(errors))
               raise SystemExit(1)
@@ -68,5 +71,5 @@ jobs:
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add '*.html' '**/*.html'
-          git commit -m 'chore(quality): inject VinTech UX safeguards [skip ci]'
+          git commit -m 'chore(quality): inject visual refinement layer [skip ci]'
           git push
